@@ -9,8 +9,9 @@ services:
       dockerfile: Dockerfile
     ports:
       - "${LOGGER_PORT}:${LOGGER_PORT}"
-    env_file:
-      - .env.production
+    environment:
+      - MONGO_URL=${MONGO_URL}
+      - LOGGER_URI=${LOGGER_URI}
     depends_on:
       - logs-database
     networks:

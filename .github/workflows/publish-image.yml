@@ -12,10 +12,13 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Login  to GitHub Container Registry
-        run: echo "${{ secrets.GH_PAT }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+        run: docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GHCR_PAT }}
+
+      - name: Set ghcr.io url
+        run: echo "REPO=${GITHUB_REPOSITORY@L}" >> "${GITHUB_ENV}"
 
       - name: Build the Docker image
-        run: docker build . -t ghcr.io/heliosshieldproject/${{ github.repository }}:${{ github.sha }}
+        run: docker build . -t ghcr.io/${{ env.REPO }}:${{ github.sha }}
 
       - name: Push the Docker image
-        run: docker push ghcr.io/heliosshieldproject/${{ github.repository }}:${{ github.sha }}
+        run: docker push ghcr.io/${{ env.REPO }}:${{ github.sha }}
