@@ -1,0 +1,59 @@
+name: "logger"
+
+services:
+  logger:
+    build:
+      context: .
+      args:
+        - LOGGER_PORT=${LOGGER_PORT}
+      dockerfile: Dockerfile
+    ports:
+      - "${LOGGER_PORT}:${LOGGER_PORT}"
+    env_file:
+      - .env.production
+    depends_on:
+      - logs-database
+    networks:
+      - logger-network
+
+  logs-database:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${LOGS_DATABASE_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${LOGS_DATABASE_PASSWORD}
+    volumes:
+      - logs-database-volume:/data/db
+    command:
+      - --port
+      - ${LOGS_DATABASE_PORT}
+    ports:
+      - "${LOGS_DATABASE_PORT}:${LOGS_DATABASE_PORT}"
+    env_file:
+      - .env.production
+    networks:
+      - logger-network
+
+  logs-viewer:
+    image: mongo-express
+    restart: always
+    ports:
+      - ${LOGS_VIEWER_PORT}:8081
+    environment:
+      ME_CONFIG_MONGODB_URL: ${MONGO_URL}
+      ME_CONFIG_OPTIONS_EDITORTHEME: nord
+      ME_CONFIG_BASICAUTH_USERNAME: ${LOGS_VIEWER_USER}
+      ME_CONFIG_BASICAUTH_PASSWORD: ${LOGS_VIEWER_PASSWORD}
+    env_file:
+      - .env.production
+    depends_on:
+      - logs-database
+    networks:
+      - logger-network
+
+volumes:
+  logs-database-volume:
+
+networks:
+  logger-network:
+    external: true
