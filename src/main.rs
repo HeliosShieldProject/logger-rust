@@ -15,11 +15,11 @@ async fn main() {
     let app = Router::new()
         .route("/log", post(log))
         .with_state(AppState { client });
-    let listener = TcpListener::bind(format!("localhost:{}", ENV.logger_port))
+    let listener = TcpListener::bind(&ENV.logger_uri)
         .await
         .unwrap();
 
-    println!("Listening on http://localhost:{}", ENV.logger_port);
+    println!("Listening on http://{}", ENV.logger_uri);
     axum::serve(listener, app).await.unwrap()
 }
 

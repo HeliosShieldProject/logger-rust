@@ -1,5 +1,7 @@
 # Helios | Logger
 
+[![AGPL-3.0 License](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://choosealicense.com/licenses/agpl-3.0/)
+
 The Logger is a simple HTTP server that accepts log entries and stores them in a MongoDB database.
 
 ## Features
@@ -60,3 +62,4 @@ To send a log entry to the service, you can use tools like cURL or Postman. Here
 
 ```bash
 curl -X POST -H "Content-Type: application/json" -d '{"message": "This is a log message"}' http://localhost:<LOGGER_PORT>/log
+```
