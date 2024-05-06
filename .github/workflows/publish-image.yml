@@ -18,7 +18,11 @@ jobs:
         run: echo "REPO=${GITHUB_REPOSITORY@L}" >> "${GITHUB_ENV}"
 
       - name: Build the Docker image
-        run: docker build . -t ghcr.io/${{ env.REPO }}:${{ github.sha }}
+        run: |
+          docker build . -t ghcr.io/${{ env.REPO }}:${{ github.sha }}
+          docker tag ghcr.io/${{ env.REPO }}:${{ github.sha }} ghcr.io/${{ env.REPO }}:latest
 
       - name: Push the Docker image
-        run: docker push ghcr.io/${{ env.REPO }}:${{ github.sha }}
+        run: |
+          docker push ghcr.io/${{ env.REPO }}:${{ github.sha }}
+          docker push ghcr.io/${{ env.REPO }}:latest
